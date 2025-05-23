@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Quiz System</title>
+    <style>
+/* Center the wrapper on the screen */
+.wrapper {
+  --input-focus: #1e418b;
+  --font-color: #323232;
+  --font-color-sub: #666;
+  --bg-color: #fff;
+  --bg-color-alt: #666;
+  --main-color: #323232;
+
+  display: flex; /* Enable flexbox */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 100vh; /* Full viewport height */
+  margin: 0; /* Remove default margins */
+  padding: 0; /* Remove default padding */
+  box-sizing: border-box; /* Include padding and border in element's width/height */
+  background-color: #f5f5f5; /* Optional: Add a background color */
+  overflow: hidden; /* Prevent content from overflowing */
+  position: relative; /* Add this for absolute positioning inside */
+}
+
+html, body {
+  font-size: 22px; /* Increased base font size */
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure the card-switch is properly positioned */
+.card-switch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  width: 480px; /* Larger card */
+  height: 600px; /* Taller card */
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow for better visibility */
+  background-color: var(--bg-color); /* Background color for the card */
+  border-radius: 15px; /* More rounded corners */
+  padding: 40px; /* Increased padding */
+  overflow: hidden; /* Ensure content stays within bounds */
+}
+
+/* Move the card-side (Log in / Sign up) above the switch */
+.card-side {
+  position: absolute;
+  top: 10px; /* Move above the switch */
+  left: 50%;
+  width: 140px;
+  height: 30px;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 24;
+  display: block;
+}
+
+.card-side::before {
+  position: absolute;
+  content: 'Log in';
+  left: -40px;
+  top: 35px;
+  width: 200px;
+  text-decoration: underline;
+  color: var(--font-color);
+  font-weight: 600;
+}
+
+.card-side::after {
+  position: absolute;
+  content: 'Sign up';
+  left: 120px;
+  top: 35px;
+  width: 100px;
+  text-decoration: none;
+  color: var(--font-color);
+  font-weight: 600;
+}
+
+/* Keep the switch square and in place */
+.switch {
+  position: absolute;
+  top: 45px; /* Lower the switch to make room for card-side */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 60px;
+  height: 25px;
+  z-index: 23;
+  background: none;
+  border: none;
+}
+
+.toggle {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+/* Use :has() for color change (supported in modern browsers) */
+.switch:has(.toggle:checked) .slider,
+.toggle:checked + .switch .slider {
+  background-color: #1e418b; /* Change to the requested color */
+}
+
+/* SLIDER: square, with sliding effect */
+.slider {
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: 2px solid var(--main-color);
+  box-shadow: 4px 4px var(--main-color);
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-color); /* Fixed typo */
+  transition: background-color 0.3s;
+}
+
+.slider:before {
+  box-sizing: border-box;
+  position: absolute;
+  content: "";
+  height: 25px;
+  width: 20px;
+  border: 2px solid var(--main-color);
+  border-radius: 5px;
+  left: -2px;
+  bottom: 2px;
+  background-color: var(--bg-color);
+  box-shadow: 0 3px 0 var(--main-color);
+  transition: transform 0.3s;
+}
+
+/* Sliding and color change for the square switch */
+.toggle:checked + .switch .slider {
+  background-color: var(--input-focus);
+}
+.toggle:checked + .switch .slider:before {
+  transform: translateX(30px);
+}
+
+.toggle:checked ~ .card-side:before {
+  text-decoration: none;
+}
+
+.toggle:checked ~ .card-side:after {
+  text-decoration: underline;
+}
+
+/* card */ 
+
+.flip-card__inner {
+  width: 100%; /* Full width of the card */
+  height: 100%; /* Full height of the card */
+  position: relative;
+  background-color: tra;
+  perspective: 1000px;
+  display: flex; /* Added flexbox */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.toggle:checked ~ .flip-card__inner {
+  transform: rotateY(180deg);
+}
+
+.toggle:checked ~ .flip-card__inner {
+  transform: rotateY(180deg);
+}
+
+.toggle:checked ~ .flip-card__front {
+  box-shadow: none;
+}
+
+.flip-card__front, .flip-card__back {
+  padding: 10px; /* Increased padding */
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  background: #1e418b;
+  gap: 20px;
+  border-radius: 15px;
+  border: 2px solid var(--main-color);
+  box-shadow: 4px 4px var(--main-color);
+}
+
+.flip-card__back {
+  width: 100%;
+  transform: rotateY(180deg);
+  z-index: 20;
+  margin-top: 60px; /* Push it down so it's not hidden under the switch */
+}
+
+/* Form styling */
+.flip-card__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  width: 100%;
+}
+
+.title {
+  font-size: 38px; /* Larger title */
+  font-weight: 900;
+  text-align: center;
+  color: white;
+}
+
+.flip-card__input {
+  width: 340px; /* Wider input */
+  height: 60px; /* Taller input */
+  border-radius: 12px;
+  border: 2px solid var(--main-color);
+  background-color: var(--bg-color);
+  box-shadow: 4px 4px var(--main-color);
+  font-size: 22px; /* Larger font */
+  font-weight: 600;
+  color: var(--font-color);
+  padding: 8px 16px;
+  outline: none;
+}
+
+.flip-card__input::placeholder {
+  color: var(--font-color-sub);
+  opacity: 0.8;
+}
+
+.flip-card__input:focus {
+  border: 2px solid var(--input-focus);
+}
+
+.flip-card__btn:active, .button-confirm:active {
+  box-shadow: 0px 0px var(--main-color);
+  transform: translate(3px, 3px);
+}
+
+.flip-card__btn {
+  width: 180px; /* Wider button */
+  height: 60px; /* Taller button */
+  border-radius: 12px;
+  border: 2px solid var(--main-color);
+  background-color: var(--bg-color);
+  box-shadow: 4px 4px var(--main-color);
+  font-size: 22px; /* Larger font */
+  font-weight: 700;
+  color: var(--font-color);
+  cursor: pointer;
+} 
+
+/* Style for the dropdown list */
+.flip-card__select {
+  width: 370px; /* Match the width of the input fields */
+  height: 75px; /* Match the height of the input fields */
+  border-radius: 12px;
+  border: 2px solid var(--main-color);
+  background-color: var(--bg-color);
+  box-shadow: 4px 4px var(--main-color);
+  font-size: 22px; /* Match the font size of the input fields */
+  font-weight: 600;
+  color: var(--font-color);
+  padding: 8px 16px;
+  outline: none;
+  appearance: auto; /* Remove default dropdown arrow for consistency */
+}
+
+/* Placeholder style for the dropdown */
+.flip-card__select option[disabled] {
+  color: var(--font-color-sub);
+  opacity: 0.8;
+}
+
+/* From Uiverse.io by MUJTABA201566 */ 
+.Btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 45px;
+  height: 45px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition-duration: 0.3s;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+  background-color: white;
+}
+
+/* plus sign */
+.sign {
+  width: 100%;
+  transition-duration: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sign svg {
+  width: 17px;
+}
+
+.sign svg path {
+  fill: black;
+}
+/* text */
+.text {
+  position: absolute;
+  right: 0%;
+  width: 0%;
+  opacity: 0;
+  color: white;
+  font-size: 1.2em;
+  font-weight: 600;
+  transition-duration: 0.3s;
+}
+/* hover effect on button width */
+.Btn:hover {
+  background-color: black;
+  width: 125px;
+  border-radius: 40px;
+  transition-duration: 0.3s;
+}
+
+.Btn:hover .sign {
+  width: 30%;
+  transition-duration: 0.3s;
+  padding-left: 20px;
+}
+
+.Btn:hover .sign svg path {
+  fill: white;
+}
+
+/* hover effect button's text */
+.Btn:hover .text {
+  opacity: 1;
+  width: 70%;
+  transition-duration: 0.3s;
+  padding-right: 10px;
+}
+/* button click effect*/
+.Btn:active {
+  transform: translate(2px, 2px);
+}
+
+/* Error message styling */
+.error-message {
+  background-color: #ffdddd;
+  color: #ff0000;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 16px;
+}
+
+/* Alert message styling */
+.alert {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+    </style>
+</head>
+<body>
+  <!-- Add a navbar -->
+  <nav style="background-color: #1e418b; padding: 20px; color: white; text-align: center;">
+    <h1>Quiz System</h1>
+  </nav>
+
+  {% if error %}
+  <div class="error-message">
+    {{ error }}
+  </div>
+  {% endif %}
+  
+  <div class="wrapper">
+    <div class="card-switch">
+      <input type="checkbox" class="toggle" id="toggle-auth">
+      <label class="switch" for="toggle-auth">
+        <span class="slider"></span>
+      </label>
+      <span class="card-side"></span>
+      <div class="flip-card__inner">
+        <div class="flip-card__front">
+          <div class="title">Log in</div>
+          <!-- Add this inside the form container, before the form -->
+          {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                  {% for category, message in messages %}
+                      <div class="alert alert-{{ category }}">
+                          {{ message }}
+                      </div>
+                  {% endfor %}
+              {% endif %}
+          {% endwith %}
+          <form class="flip-card__form" action="/login" method="POST">
+            <input class="flip-card__input" name="username" placeholder="Username" type="text" required>
+            <input class="flip-card__input" name="password" placeholder="Password" type="password" required>
+            <button class="flip-card__btn" type="submit">Login</button>
+          </form>
+        </div>
+        <div class="flip-card__back">
+          <div class="title">Sign up</div>
+          <form class="flip-card__form" action="/signup" method="POST">
+            <input class="flip-card__input" name="username" placeholder="Username" type="text" required>
+            <input class="flip-card__input" name="email" placeholder="Email" type="email" required>
+            <input class="flip-card__input" name="password" placeholder="Password" type="password" required>
+            <select class="flip-card__select" name="department" id="department" required>
+              <option value="" disabled selected>Select a department</option>
+              <option value="IT">IT</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Finance">Finance</option>
+              <option value="Dispatch">Dispatch</option>
+              <option value="HR">HR</option>
+              <option value="Gold">Gold</option>
+              <option value="Sales">Sales</option>
+            </select>
+            <button class="flip-card__btn" type="submit">Sign Up</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

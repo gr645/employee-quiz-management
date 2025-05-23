@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Quiz</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        nav {
+            background-color: #1e418b;
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .card-header {
+            background-color: #1e418b;
+            color: white;
+            padding: 15px 20px;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .btn {
+            background-color: #1e418b;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+        .question {
+            margin-bottom: 30px;
+        }
+        .question-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .options {
+            margin-left: 20px;
+        }
+        .option {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .option:hover {
+            background-color: #f0f0f0;
+        }
+        .option.selected {
+            background-color: #e3f2fd;
+            border-color: #1e418b;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .navigation {
+            text-align: right;
+        }
+        .progress {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #1e418b;
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+        .result {
+            text-align: center;
+            padding: 20px;
+        }
+        .score {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+        }
+        .score-good {
+            background-color: #28a745;
+        }
+        .score-average {
+            background-color: #ffc107;
+        }
+        .score-poor {
+            background-color: #dc3545;
+        }
+        .message {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        /* From Uiverse.io by MUJTABA201566 */ 
+        .Btn {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition-duration: 0.3s;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+            background-color: white;
+        }
+
+        /* plus sign */
+        .sign {
+            width: 100%;
+            transition-duration: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sign svg {
+            width: 17px;
+        }
+
+        .sign svg path {
+            fill: black;
+        }
+        /* text */
+        .text {
+            position: absolute;
+            right: 0%;
+            width: 0%;
+            opacity: 0;
+            color: white;
+            font-size: 1.2em;
+            font-weight: 600;
+            transition-duration: 0.3s;
+        }
+        /* hover effect on button width */
+        .Btn:hover {
+            background-color: black;
+            width: 125px;
+            border-radius: 40px;
+            transition-duration: 0.3s;
+        }
+
+        .Btn:hover .sign {
+            width: 30%;
+            transition-duration: 0.3s;
+            padding-left: 20px;
+        }
+
+        .Btn:hover .sign svg path {
+            fill: white;
+        }
+
+        /* hover effect button's text */
+        .Btn:hover .text {
+            opacity: 1;
+            width: 70%;
+            transition-duration: 0.3s;
+            padding-right: 10px;
+        }
+        /* button click effect*/
+        .Btn:active {
+            transform: translate(2px, 2px);
+        }
+
+        .timer-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .timer {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #1e418b;
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .timer.warning {
+            background-color: #dc3545;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        .time-ended-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .time-ended-message {
+            background: white;
+            padding: 20px 40px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 24px;
+            color: #dc3545;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>Quiz System</h1>
+        <form action="/logout" method="POST" style="margin: 0; padding: 0; background: none; box-shadow: none;">
+            <button class="Btn" type="submit">
+                <div class="sign">
+                    <svg viewBox="0 0 512 512">
+                        <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path>
+                    </svg>
+                </div>
+                <div class="text">Logout</div>
+            </button>
+        </form>
+    </nav>
+
+    <!-- Move timer here, right after nav -->
+    {% if quiz_started and quiz %}
+    <div class="timer-container">
+        <div class="timer" id="timerDisplay">
+            Time Remaining: <span id="timer">{{ quiz.timer|default(60) }}</span>s
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="container">
+        {% if has_taken_quiz %}
+            <div class="card">
+                <div class="card-header">
+                    <h2>Quiz Results</h2>
+                </div>
+                <div class="card-body">
+                    <div class="result">
+                        <div class="score-circle {% if score >= 70 %}score-good{% elif score >= 50 %}score-average{% else %}score-poor{% endif %}">
+                            {{ "%.1f"|format(score) }}%
+                        </div>
+                        <div class="message">
+                            {% if score >= 70 %}
+                                <h3>Excellent work!</h3>
+                            {% elif score >= 50 %}
+                                <h3>Good effort!</h3>
+                            {% else %}
+                                <h3>Keep practicing!</h3>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <a href="{{ url_for('user_dashboard') }}" class="btn">Return to Dashboard</a>
+                </div>
+            </div>
+        {% elif not quizzes %}
+            <div class="card">
+                <div class="card-header">
+                    <h2>Welcome, {{ user.name }}</h2>
+                </div>
+                <div class="card-body">
+                    <p>There are no quizzes available for the {{ user.department }} department at this time.</p>
+                    <p>Please check back later.</p>
+                </div>
+            </div>
+        {% elif not quiz_started %}
+            <div class="card">
+                <div class="card-header">
+                    <h2>Welcome, {{ user.name }}</h2>
+                </div>
+                <div class="card-body">
+                    <p>You have a quiz available for the {{ user.department }} department.</p>
+                    <p>This quiz contains {{ quizzes|length }} questions. Once you start, you must complete the quiz in one session.</p>
+                    <p><strong>Note:</strong> You can only take this quiz once.</p>
+                    <form action="/start-quiz" method="POST">
+                        <button type="submit" class="btn">Start Quiz</button>
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <div class="card">
+                <div class="card-header">
+                    <h2>{{ user.department }} Department Quiz</h2>
+                </div>
+                <div class="card-body">
+                    <div class="progress">
+                        <div class="progress-bar" style="width: (current_question / quizzeslength) * 100 "></div>
+                    </div>
+                    <p>Question {{ current_question + 1 }} of {{ quizzes|length }}</p>
+                    
+                    <form action="/submit-answer" method="POST" id="quiz-form">
+                        <input type="hidden" name="question_id" value="{{ quizzes[current_question]._id }}">
+                        
+                        <div class="question">
+                            <div class="question-text">{{ quizzes[current_question].question }}</div>
+                            <div class="options">
+                                {% for option in quizzes[current_question].options %}
+                                <div class="option" onclick="selectOption(this, '{{ option|e }}')">
+                                    <input type="radio" name="answer" value="{{ option|e }}" id="option{{ loop.index }}" style="display: none;">
+                                    <label for="option{{ loop.index }}">{{ option }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="navigation" style="text-align: right;">
+                            {% if current_question < quizzes|length - 1 %}
+                                <button type="submit" class="btn" name="action" value="next">Next</button>
+                            {% else %}
+                                <button type="submit" class="btn" name="action" value="finish">Finish Quiz</button>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function selectOption(element, value) {
+            // Remove selected class from all options
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            
+            // Set the radio button value
+            document.querySelector(`input[value="${value}"]`).checked = true;
+        }
+
+        {% if quiz_started and quiz %}
+        document.addEventListener('DOMContentLoaded', function() {
+            let timeLeft = {{ quiz.timer|default(60) }};
+            const timerDisplay = document.getElementById('timer');
+            const timerContainer = document.getElementById('timerDisplay');
+            const quizForm = document.getElementById('quiz-form');
+            let timerInterval;
+
+            function showTimeEndedMessage() {
+                // Create overlay div
+                const overlay = document.createElement('div');
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 1000;
+                `;
+
+                // Create message div
+                const message = document.createElement('div');
+                message.style.cssText = `
+                    background: white;
+                    padding: 20px 40px;
+                    border-radius: 8px;
+                    text-align: center;
+                    font-size: 24px;
+                    color: #dc3545;
+                `;
+                message.textContent = 'Quiz Time Ended';
+
+                overlay.appendChild(message);
+                document.body.appendChild(overlay);
+
+                // Auto-submit form after showing message
+                setTimeout(() => {
+                    quizForm.submit();
+                }, 2000);
+            }
+
+            function startTimer() {
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    if (timerDisplay) {
+                        timerDisplay.textContent = timeLeft;
+                        
+                        if (timeLeft <= 10) {
+                            timerContainer.classList.add('warning');
+                        }
+                        
+                        if (timeLeft <= 0) {
+                            clearInterval(timerInterval);
+                            
+                            // Show time ended message
+                            showTimeEndedMessage();
+                            
+                            // Create hidden inputs for form submission
+                            const timeExpiredInput = document.createElement('input');
+                            timeExpiredInput.type = 'hidden';
+                            timeExpiredInput.name = 'time_expired';
+                            timeExpiredInput.value = 'true';
+                            quizForm.appendChild(timeExpiredInput);
+                            
+                            const actionInput = document.createElement('input');
+                            actionInput.type = 'hidden';
+                            actionInput.name = 'action';
+                            actionInput.value = 'next';
+                            quizForm.appendChild(actionInput);
+                        }
+                    }
+                }, 1000);
+            }
+
+            startTimer();
+        });
+        {% endif %}
+    </script>
+</body>
+</html>
